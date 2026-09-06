@@ -4,7 +4,7 @@ const SPOTIFLAC_BRIDGE_MUSICDL = {
     version: '1.0.0',
     labels: ['FLAC', 'LOSSLESS', 'MUSICDL'],
 
-    searchTracks: async (query, limit) => {
+    searchTracks: async function(query, limit) {
         try {
             const encodedQuery = encodeURIComponent(query.trim());
             const searchUrl = `https://www.musicdl.me/api/search?q=${encodedQuery}&limit=${limit || 20}`;
@@ -41,7 +41,7 @@ const SPOTIFLAC_BRIDGE_MUSICDL = {
         }
     },
 
-    getTrackStreamUrl: async (trackId, quality) => {
+    getTrackStreamUrl: async function(trackId, quality) {
         try {
             const streamUrl = `https://www.musicdl.me/api/download/${trackId}?quality=flac`;
             
@@ -80,7 +80,7 @@ const SPOTIFLAC_BRIDGE_MUSICDL = {
         }
     },
 
-    getAlbum: async (id) => {
+    getAlbum: async function(id) {
         try {
             const res = await fetch(`https://www.musicdl.me/api/album/${id}`);
             if (!res.ok) return null;
@@ -97,7 +97,7 @@ const SPOTIFLAC_BRIDGE_MUSICDL = {
         }
     },
 
-    getArtist: async (id) => {
+    getArtist: async function(id) {
         try {
             const res = await fetch(`https://www.musicdl.me/api/artist/${id}`);
             if (!res.ok) return null;
