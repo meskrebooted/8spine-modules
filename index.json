@@ -1,0 +1,22 @@
+{
+  "category:artwork": [],
+  "category:stream": [
+    {
+      "id": "spotiflac-bridge-musicdl",
+      "name": "SpotiFLAC Bridge - MusicDL",
+      "pkg": "com.8spine.module.spotiflacbridge.musicdl",
+      "file": "musicdl_stream.8spine",
+      "download": "https://raw.githubusercontent.com/meskrebooted/8spine-modules/main/musicdl/musicdl_stream.8spine",
+      "version": "v1.0.0",
+      "code": 100,
+      "type": "STREAM",
+      "author": "meskrebooted",
+      "description": "Modulo 8SPINE STREAM che usa MusicDL direttamente per ottenere stream lossless FLAC senza Cloudflare di SpotiFLAC Mobile",
+      "tags": ["flac", "lossless", "musicdl", "spotiflac"],
+      "featured": false,
+      "trusted": false,
+      "nsfw": false,
+      "lang": "all"
+    }
+  ]
+}

@@ -1,0 +1,117 @@
+const SPOTIFLAC_BRIDGE_MUSICDL = {
+    id: 'spotiflac-bridge-musicdl',
+    name: 'SpotiFLAC Bridge - MusicDL',
+    version: '1.0.0',
+    labels: ['FLAC', 'LOSSLESS', 'MUSICDL'],
+
+    searchTracks: async (query, limit) => {
+        try {
+            const encodedQuery = encodeURIComponent(query.trim());
+            const searchUrl = `https://www.musicdl.me/api/search?q=${encodedQuery}&limit=${limit || 20}`;
+            
+            const res = await fetch(searchUrl, {
+                headers: {
+                    'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X)',
+                    'Accept': 'application/json'
+                }
+            });
+            
+            if (!res.ok) {
+                throw new Error(`Search failed: ${res.status}`);
+            }
+            
+            const data = await res.json();
+            
+            const tracks = (data.results || []).map(item => ({
+                id: String(item.id || item.track_id || ''),
+                title: item.title || item.track_name || '',
+                artist: item.artist || item.artist_name || '',
+                album: item.album || item.album_name || '',
+                duration: Number(item.duration || item.length_seconds || 0),
+                albumCover: item.cover_url || item.album_cover || item.thumbnail || ''
+            })).filter(t => t.id && t.title);
+            
+            return {
+                tracks: tracks.slice(0, limit || 20),
+                total: data.total || tracks.length
+            };
+        } catch (error) {
+            console.error('MusicDL search error:', error);
+            return { tracks: [], total: 0 };
+        }
+    },
+
+    getTrackStreamUrl: async (trackId, quality) => {
+        try {
+            const streamUrl = `https://www.musicdl.me/api/download/${trackId}?quality=flac`;
+            
+            const res = await fetch(streamUrl, {
+                headers: {
+                    'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X)',
+                    'Accept': 'application/json'
+                }
+            });
+            
+            if (!res.ok) {
+                throw new Error(`Stream URL fetch failed: ${res.status}`);
+            }
+            
+            const data = await res.json();
+            
+            const directUrl = data.direct_url || data.url || data.stream_url || '';
+            
+            if (!directUrl) {
+                throw new Error('No direct URL found in response');
+            }
+            
+            return {
+                streamUrl: directUrl,
+                track: {
+                    id: trackId,
+                    audioQuality: quality === 'LOSSLESS' ? 'LOSSLESS' : 'HIGH'
+                }
+            };
+        } catch (error) {
+            console.error('MusicDL stream error:', error);
+            return {
+                streamUrl: '',
+                track: { id: trackId, audioQuality: 'LOW' }
+            };
+        }
+    },
+
+    getAlbum: async (id) => {
+        try {
+            const res = await fetch(`https://www.musicdl.me/api/album/${id}`);
+            if (!res.ok) return null;
+            const data = await res.json();
+            return {
+                id: data.id,
+                name: data.name,
+                artist: data.artist,
+                cover: data.cover_url,
+                tracks: data.tracks || []
+            };
+        } catch (e) {
+            return null;
+        }
+    },
+
+    getArtist: async (id) => {
+        try {
+            const res = await fetch(`https://www.musicdl.me/api/artist/${id}`);
+            if (!res.ok) return null;
+            const data = await res.json();
+            return {
+                id: data.id,
+                name: data.name,
+                picture: data.picture_url,
+                albums: data.albums || []
+            };
+        } catch (e) {
+            return null;
+        }
+    }
+};
+
+return SPOTIFLAC_BRIDGE_MUSICDL;
