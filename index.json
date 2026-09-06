@@ -7,7 +7,7 @@
       "pkg": "com.8spine.module.spotiflacbridge.musicdl",
       "file": "musicdl_stream.8spine",
       "download": "https://raw.githubusercontent.com/meskrebooted/8spine-modules/main/musicdl/musicdl_stream.8spine",
-      "version": "v1.0.0",
+      "version": "v1.0.1",
       "code": 100,
       "type": "STREAM",
       "author": "meskrebooted",
